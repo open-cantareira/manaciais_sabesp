@@ -24,3 +24,9 @@ O *script* foi desenvolvido a partir da interpretação do arquivo *json* que al
 ### Ajustes
 
 Em 14.02.2022 fiz ajustes visto que funções não mais funcioonavam. A API alterou de "jaguari_cesp" para "jaguari_psb".
+
+
+
+
+Tem também esses dados aqui!
+mananciais.sabesp.com.br/api/Mananciais/ResumoTelemetricos/2020-04-01
