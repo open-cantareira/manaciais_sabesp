@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-#!pip install plotly
+# !pip install plotly
 
 
 import os
@@ -16,11 +16,11 @@ from plotly.offline import plot
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-
 try:
     from sabesp import settings
     from dados.models import cantareira
     from django.conf import settings
+
     print('In Django:\n{}'.format(settings.BASE_DIR))
     in_django = True
 except Exception as e:
@@ -31,13 +31,13 @@ except Exception as e:
 
 def m3s_2_hm3(m3s):
     "Converte m3/s em um dia (86400 segundos) para hm3"
-    x = m3s * (24*60*60) * 0.000001
+    x = m3s * (24 * 60 * 60) * 0.000001
     return x
 
 
 def hm3_2_m3s(hm3):
     "Converte mhm3 para m3/s em um dia (86400 segundos)"
-    x = hm3 / (24*60*60) / 0.000001
+    x = hm3 / (24 * 60 * 60) / 0.000001
     return x
 
 
@@ -49,11 +49,11 @@ def get_middle_date(start_date, end_date):
     Retorno em dataetime
     """
     # Get Middle Date
-    #start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-    #end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    # start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    # end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
-    x = (end_date-start_date).days
-    x = start_date + timedelta(x/2)
+    x = (end_date - start_date).days
+    x = start_date + timedelta(x / 2)
     return x
 
 
@@ -119,8 +119,8 @@ def concat_dfdb(df):
     database = 'da818piepcotea'
     user = 'aohjlkbcflpjkk'
     port = '5432'
-    password='211406869e5c3e2fe81b84ad37f45c0f5c645f4ef834271a70f3918dda00d500'
-    
+    password = '211406869e5c3e2fe81b84ad37f45c0f5c645f4ef834271a70f3918dda00d500'
+
     # Conection
     db = psycopg2.connect(
         host=host,
@@ -149,9 +149,9 @@ def concat_dfdb(df):
     df_db['data'] = pd.to_datetime(df_db['data'], format='%Y-%m-%d')
 
     # Seleciona o deadline
-    #deadline
-    #deadline = '2020-07-10'
-    #df = df[df['data'] >= deadline]
+    # deadline
+    # deadline = '2020-07-10'
+    # df = df[df['data'] >= deadline]
 
     # Concat
     df = pd.concat([df, df_db])
@@ -186,19 +186,19 @@ def set_periodo(data):
     if data >= periodoseco_start and data <= periodoseco_end:
         periodo = 'Período Seco'
         days2end_periodo = (periodoseco_end - data).days
-        
+
     elif data < periodoseco_start:
         periodo = 'Período Úmido'
         days2end_periodo = (periodoseco_start - data).days
-        
+
     elif data > periodoseco_end:
         periodo = 'Período Úmido'
-        x = periodoseco_start + relativedelta(years=1)-timedelta(1)
+        x = periodoseco_start + relativedelta(years=1) - timedelta(1)
         days2end_periodo = (x - data).days
-        
+
     else:
         periodo = 'Erro'
-        
+
     return periodo, days2end_periodo, periodoseco_start, periodoseco_end
 
 
@@ -219,7 +219,7 @@ def set_faixas(vol_porcentagem):
     elif vol_porcentagem < 0.2:
         faixa = 'Faixa 5 (Especial)'
         faixa_id = 5
-        
+
     return faixa, faixa_id
 
 
@@ -229,36 +229,36 @@ def get_faixas(data, df):
     """
 
     # Filtra Tabela
-    #df = df[df['data'] == pd.Timestamp(data)]
-    #df.loc[:, 'data' == pd.Timestamp(data)]
+    # df = df[df['data'] == pd.Timestamp(data)]
+    # df.loc[:, 'data' == pd.Timestamp(data)]
     df.loc[df['data'] == pd.Timestamp(data)]
 
     # Calcula Campo
     df['sc_calc_volumeporcentagem'] = (
-        (df['jaguari_jacarei_volumeoperacional'] +
-        df['cachoeira_volumeoperacional'] +
-        df['atibainha_volumeoperacional'] +
-        df['paivacastro_volumeoperacional']) / 
-        (
-            (df['jaguari_jacarei_volumemaximo'] +
-            df['cachoeira_volumemaximo'] +
-            df['atibainha_volumemaximo'] +
-            df['paivacastro_volumemaximo'])
-            -
-            (df['jaguari_jacarei_volumeminimo'] +
-            df['cachoeira_volumeminimo'] +
-            df['atibainha_volumeminimo'] +
-            df['paivacastro_volumeminimo'])
-    ))
-    
+            (df['jaguari_jacarei_volumeoperacional'] +
+             df['cachoeira_volumeoperacional'] +
+             df['atibainha_volumeoperacional'] +
+             df['paivacastro_volumeoperacional']) /
+            (
+                    (df['jaguari_jacarei_volumemaximo'] +
+                     df['cachoeira_volumemaximo'] +
+                     df['atibainha_volumemaximo'] +
+                     df['paivacastro_volumemaximo'])
+                    -
+                    (df['jaguari_jacarei_volumeminimo'] +
+                     df['cachoeira_volumeminimo'] +
+                     df['atibainha_volumeminimo'] +
+                     df['paivacastro_volumeminimo'])
+            ))
+
     # Define o Valor
     vol_porcentagem = df.iloc[0]['sc_calc_volumeporcentagem']
-    
+
     # Set Faixas
     faixa, faixa_id = set_faixas(vol_porcentagem)
 
     # Round
-    vol_porcentagem = round(vol_porcentagem*100, 2)
+    vol_porcentagem = round(vol_porcentagem * 100, 2)
 
     return (
         data.strftime('%d.%m.%Y'),
@@ -275,21 +275,21 @@ def get_graph_faixas(df):
 
     # Calcula Campo
     df['sc_calc_volumeporcentagem'] = (
-        (df['jaguari_jacarei_volumeoperacional'] +
-        df['cachoeira_volumeoperacional'] +
-        df['atibainha_volumeoperacional'] +
-        df['paivacastro_volumeoperacional']) / 
-        (
-            (df['jaguari_jacarei_volumemaximo'] +
-            df['cachoeira_volumemaximo'] +
-            df['atibainha_volumemaximo'] +
-            df['paivacastro_volumemaximo'])
-            -
-            (df['jaguari_jacarei_volumeminimo'] +
-            df['cachoeira_volumeminimo'] +
-            df['atibainha_volumeminimo'] +
-            df['paivacastro_volumeminimo'])
-    ))
+            (df['jaguari_jacarei_volumeoperacional'] +
+             df['cachoeira_volumeoperacional'] +
+             df['atibainha_volumeoperacional'] +
+             df['paivacastro_volumeoperacional']) /
+            (
+                    (df['jaguari_jacarei_volumemaximo'] +
+                     df['cachoeira_volumemaximo'] +
+                     df['atibainha_volumemaximo'] +
+                     df['paivacastro_volumemaximo'])
+                    -
+                    (df['jaguari_jacarei_volumeminimo'] +
+                     df['cachoeira_volumeminimo'] +
+                     df['atibainha_volumeminimo'] +
+                     df['paivacastro_volumeminimo'])
+            ))
 
     # Get Middle Date
     end_date = date.today()
@@ -308,11 +308,11 @@ def get_graph_faixas(df):
             # hover_name='sss',
             line={
                 'color': '#000066',
-                #'dash': 'dash'
+                # 'dash': 'dash'
             }
         )
     )
-    
+
     # Create scatter trace of text labels
     fig.add_trace(
         go.Scatter(
@@ -329,7 +329,7 @@ def get_graph_faixas(df):
             hoverinfo='none',
         )
     )
-    
+
     fig.add_shape(
         dict(
             type='rect',
@@ -472,8 +472,8 @@ def get_forecast_data(df):
         df_periodoseco = df[df['data'] >= pd.Timestamp(periodoseco_start)]
         hm3_today = sum(df_periodoseco['hm3jusante'])
         hm3_periodoseco = 158.1
-        hm3_balance = hm3_periodoseco-hm3_today
-        hm3_forecast = hm3_balance/days2end_periodo
+        hm3_balance = hm3_periodoseco - hm3_today
+        hm3_forecast = hm3_balance / days2end_periodo
         m3s_forecast = hm3_2_m3s(hm3_forecast)
 
         # Define Parâmetros para criar uma tabela iniciando com o dia de amanhã
@@ -505,13 +505,13 @@ def get_forecast_data(df):
             max_date,
         )
     if periodo == 'Período Úmido':
-        #TODO: Ajustar toda essa sessão sobre periodo úmido.
+        # TODO: Ajustar toda essa sessão sobre periodo úmido.
         max_date = max(df['data'])
         df_periodoseco = df[df['data'] >= pd.Timestamp(periodoseco_start)]
         hm3_today = sum(df_periodoseco['hm3jusante'])
         hm3_periodoseco = 158.1
-        hm3_balance = hm3_periodoseco-hm3_today
-        hm3_forecast = hm3_balance/days2end_periodo
+        hm3_balance = hm3_periodoseco - hm3_today
+        hm3_forecast = hm3_balance / days2end_periodo
         m3s_forecast = hm3_2_m3s(hm3_forecast)
 
         # Define Parâmetros para criar uma tabela iniciando com o dia de amanhã
@@ -557,7 +557,7 @@ def get_graph_forecast(date_series, data_plot):
     )
 
     fig.add_trace(scatter)
-    plt = plot(fig, output_type='div', include_plotlyjs=False)    
+    plt = plot(fig, output_type='div', include_plotlyjs=False)
     return plt, fig
 
 
@@ -656,7 +656,7 @@ def get_qmin_data(df):
     df['jaguari_qjusante'] = df['jaguari_jacarei_qjusante']
     df['atibaia_qjusante'] = (df['cachoeira_qjusante'] + df['atibainha_qjusante'])
     df['juqueri_qjusante'] = df['paivacastro_qjusante']
-    
+
     return df
 
 
@@ -714,7 +714,7 @@ def set_limiteretirada(faixa_id):
         limite_retirada = 23
     elif faixa_id == 5:
         limite_retirada = 15.5
-        
+
     return limite_retirada
 
 
@@ -722,7 +722,7 @@ def get_qretirada_data(df):
     # Filtra Tabela
     start_date = '2017-05-29'
     df = df[df['data'] >= pd.Timestamp(start_date)]
-    
+
     # Filtra Colunas
     df = df[[
         'data',
@@ -730,24 +730,24 @@ def get_qretirada_data(df):
         'jaguari_jacarei_volumemaximo', 'cachoeira_volumemaximo',
         'atibainha_volumemaximo', 'paivacastro_volumemaximo',
         'qesi_valor', 'sc_vazaoretirada', 'sc_vazaojusante',
-    ]]       
-    
+    ]]
+
     # Calcula Campo
     df['sc_calc_volumeporcentagem'] = (
-        df['jaguari_jacarei_volume'] +
-        df['cachoeira_volume'] +
-        df['atibainha_volume'] +
-        df['paivacastro_volume']) / (
-        df['jaguari_jacarei_volumemaximo'] +
-        df['cachoeira_volumemaximo'] +
-        df['atibainha_volumemaximo'] +
-        df['paivacastro_volumemaximo']
-    )
+                                              df['jaguari_jacarei_volume'] +
+                                              df['cachoeira_volume'] +
+                                              df['atibainha_volume'] +
+                                              df['paivacastro_volume']) / (
+                                              df['jaguari_jacarei_volumemaximo'] +
+                                              df['cachoeira_volumemaximo'] +
+                                              df['atibainha_volumemaximo'] +
+                                              df['paivacastro_volumemaximo']
+                                      )
 
     df[['faixa', 'faixa_id']] = df.apply(lambda x: set_faixas(x['sc_calc_volumeporcentagem']),
-                                          axis=1, result_type='expand')
+                                         axis=1, result_type='expand')
     df['limiteretirada'] = df.apply(lambda x: set_limiteretirada(x['faixa_id']), axis=1)
-    
+
     return df
 
 
@@ -800,7 +800,7 @@ def get_graph_qretirada(df):
     fig.update_layout(
         yaxis={'title': 'Vazão (m³/s)'},
     )
-    #fig.update_layout(yaxis_tickformat='.2')
+    # fig.update_layout(yaxis_tickformat='.2')
     fig.update_layout(xaxis_tickformat='%d %B<br>%Y')
     fig.update_layout(showlegend=False)
 
@@ -808,10 +808,5 @@ def get_graph_qretirada(df):
 
     return plt, fig
 
-
-#df = df.groupby(['ano', 'mes']).mean()
-#df = df.reset_index()
-
-
-
-
+# df = df.groupby(['ano', 'mes']).mean()
+# df = df.reset_index()
